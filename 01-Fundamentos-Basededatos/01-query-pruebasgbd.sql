@@ -30,10 +30,10 @@ references categoria(idcategoria)
 INSERT INTO categoria(categorianombre)
 VALUES ('Lacteos');
 INSERT INTO categoria(categorianombre)
-VALUES ('Carnes frías'),('Vinos y licores');
+VALUES ('Carnes frï¿½as'),('Vinos y licores');
 --Seleccionar los datos de la categoria
 SELECT*
-FROM categoria;
+FROMï¿½categoria;
 
 SELECT categorianombre
 FROM categoria
@@ -66,7 +66,7 @@ VALUES ('Don julio', 456,43.2,3,2),
 	   ('Leche nido',567,567.4,1,3);
 
  SELECT*
-FROM producto;
+FROMï¿½producto;
 
 
 
