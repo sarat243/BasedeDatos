@@ -2,7 +2,7 @@
 
 --Lenguaje SQL-LDD (create,alter,drop)
 
---Crear la base de datos empresag2
+--Crear la base de datos empresag2 modificado
 
 CREATE DATABASE empresaG2;
 GO
