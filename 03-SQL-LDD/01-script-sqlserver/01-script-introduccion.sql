@@ -49,4 +49,94 @@ INSERT INTO empleado(Nombre,Apellidopaterno,curp,telefono,sexo,activo)
 values('Saraih','Victorio','gcuwdh','24300687','F','1');
 
 SELECT*FROM empleado;
+GO
 
+--Creacion de Primary Keys compuestas
+CREATE TABLE Tabla1
+(
+tabla1id1 int  not null,
+tabla1id2 int not null,
+Nombre nvarchar(20) not null,
+CONSTRAINT pk_Tabla1
+PRIMARY KEY(tabla1id1,tabla1id2),
+);
+GO
+
+--Razon de cardinalidad 1:N
+CREATE TABLE tabla2
+(
+Tabla2id int not null identity(1,1),
+Nombre varchar(20),
+tabla1id1 int,
+tabla1id2 int,
+CONSTRAINT ps_Tabla2
+PRIMARY KEY(Tabla2id),
+CONSTRAINT fk_tabla2_tabla1
+FOREIGN KEY (tabla1id1,tabla1id2)
+REFERENCES Tabla1 (tabla1id1,tabla1id2)
+);
+
+CREATE TABLE  Employe
+(
+Id int not null identity(1,1),
+Nombre varchar(20) not null,
+Ap1 nvarchar(20) not null,
+Ap2 nvarchar(20),
+Sexo char(1) not null,
+Salario money not null,
+CONSTRAINT pk_employee
+PRIMARY KEY(Id),
+CONSTRAINT chk_Sexo
+CHECK (Sexo in ('M','F')),
+CONSTRAINT chk_Salario
+CHECK (Salario>0.0)
+
+);
+GO
+
+CREATE TABLE Department
+(
+Id int not null identity(1,1),
+NombreProyecto varchar(20) not null,
+Ubicacion varchar(15) not null,
+FechaInicio Date not null,
+IdEmployee int not null,
+CONSTRAINT pk_deparment
+PRIMARY KEY (Id),
+CONSTRAINT unique_nombreproyecto
+UNIQUE(NombreProyecto),
+CONSTRAINT unique_idemployee
+UNIQUE (IdEmployee ),
+CONSTRAINT fk_deparment_employee
+FOREIGN KEY (IdEmployee)
+REFERENCES Employe(Id)
+
+
+);
+
+CREATE TABLE Proyect 
+
+(
+Proyectid int not null identity (1,1),
+Nombre nvarchar(20) not null,
+CONSTRAINT pk_proyect
+PRIMARY KEY (Proyectid)
+
+);
+
+
+CREATE TABLE WorkOn
+(
+employeeid int not null,
+proyectid int not null,
+Horas int not null,
+CONSTRAINT pk_WorkOn
+PRIMARY KEY(employeeid,proyectid),
+CONSTRAINT fk_WorkOn_employee
+FOREIGN KEY (employeeid)
+REFERENCES Employe(Id),
+CONSTRAINT fk_WorkOn_Proyect
+FOREIGN KEY (proyectid)
+REFERENCES Proyect(Proyectid)
+
+);
