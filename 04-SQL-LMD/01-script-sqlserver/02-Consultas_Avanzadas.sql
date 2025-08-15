@@ -257,17 +257,78 @@ END
 exec sp_pruebaconsulta '1990-01-01','1990-04-06'
 
 --Cual es el rango de las coutas asignadas de cada oficina(ciudad)
-SELECT o.Ciudad,MAX(cuota) AS [Maximo Cuota], MIN (cuota) [MINIMO Cuota], (MAX (cuota) - MIN (cuota)) AS [Rango]
+SELECT o.Ciudad,r.Nombre,MAX(cuota) AS [Maximo Cuota], MIN (cuota) [MINIMO Cuota], (MAX (cuota) - MIN (cuota)) AS [Rango]
 FROM Representantes AS r
 INNER JOIN Oficinas AS o
-ON r.Num_Empl=o.Jef
-Group by o.Ciudad
+ON o.Oficina=r.Oficina_Rep
+Group by o.Ciudad,r.Nombre
+ORDER BY o.Ciudad;
+GO
+-----------------------------------------
+USE NORTHWND
+/*
+Seleccionar el ingreo total por cliente en 1997 y 
+ordenado por el ingreso de forma descendente
+*/
+SELECT  c.CompanyName AS [Cliente ],
+SUM(od.Quantity*od.UnitPrice * (1-od.Discount)) AS [Ingreso Total]
+FROM [Order Details] AS od
+INNER JOIN 
+Orders AS o
+ON o.OrderID = od.OrderID
+INNER JOIN Customers AS c
+ON c.CustomerID = o.CustomerID
+WHERE YEAR (o.OrderDate) = 1997
+GROUP BY c.CompanyName 
+ORDER BY c.CompanyName DESC 
+GO
+-------------------------------------------------------------------------
+SELECT TOP 10 c.CompanyName AS [Cliente ],
+ROUND(SUM(od.Quantity*od.UnitPrice * (1-od.Discount)),2) AS [Ingreso Total]
+FROM [Order Details] AS od
+INNER JOIN 
+Orders AS o
+ON o.OrderID = od.OrderID
+INNER JOIN Customers AS c
+ON c.CustomerID = o.CustomerID
+WHERE YEAR (o.OrderDate) = 1997
+GROUP BY c.CompanyName 
+ORDER BY 2 DESC 
+
+/*
+Seleccionar los productos por categorias mas vendidos, 
+para alemania ordenados por categoria y dentro de categoria por unidad
+de forma descendente
+*/
+SELECT c.CategoryName AS [Categoria],
+p.ProductName AS [Producto],
+
+SUM (od.Quantity) AS [Unidades]
+FROM [Order Details] AS od
+INNER JOIN Orders AS o
+ON o.OrderID=od.OrderID
+INNER JOIN
+Products AS [p]
+ON p.ProductID= od.ProductID
+INNER JOIN 
+Categories AS c
+ON c.CategoryID=p.CategoryID
+WHERE o.ShipCountry='Germany'
+GROUP BY c.CategoryName, P.ProductName
+ORDER BY C.CategoryName
+
+/*
+Seleccionar empleados con mas pedido por año 
+ordenados por año y por numero de pedidos
+*/
 
 
 
-
-USE BDEJEMPLO2
-
-SELECT 
-* FROM Pedidos
-
+SELECT CONCAT (e.FirstName, '  ', e.LastName) AS [Empleado] ,
+DATEPART(YEAR, o.OrderDate) AS [Año]
+,COUNT (*) AS [Numero Pedido]
+FROM Orders AS o
+INNER JOIN Employees AS e 
+ON o.EmployeeID=e.EmployeeID
+GROUP BY CONCAT (e.FirstName, '  ', e.LastName), DATEPART(YEAR, o.OrderDate)
+ORDER BY [Año], [Numero Pedido] DESC;
